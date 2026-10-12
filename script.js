@@ -10,7 +10,17 @@ const PORTFOLIO_CONFIG = {
   instagram: "https://www.instagram.com/o_melhor_dev/"
 };
 
+const EMAILJS_CONFIG = {
+  publicKey: "bh2JC2kzO2do5Ojb7",
+  serviceId: "service_o5h3vii",
+  templateId: "template_dkg63mk"
+};
+
 $(document).ready(function () {
+
+    if (typeof emailjs !== "undefined") {
+    emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+  }
 
   /* ============================================
      PRELOADER
@@ -264,48 +274,60 @@ $(document).ready(function () {
      FORMULAIRE DE CONTACT
   ============================================ */
   $("#contactForm").on("submit", function (e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const name = $("#name").val().trim();
-    const email = $("#email").val().trim();
-    const subject = $("#subject").val().trim();
-    const message = $("#message").val().trim();
+  const name = $("#name").val().trim();
+  const email = $("#email").val().trim();
+  const subject = $("#subject").val().trim();
+  const message = $("#message").val().trim();
 
-    if (!name || !email || !subject || !message) {
-      showToast("Merci de remplir tous les champs.");
-      return;
+  if (!name || !email || !subject || !message) {
+    showToast("Merci de remplir tous les champs.");
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showToast("Adresse e-mail invalide.");
+    return;
+  }
+
+  const submitBtn = $(this).find(".form-submit");
+  const originalText = submitBtn.html();
+  submitBtn.html("Envoi en cours...").prop("disabled", true);
+
+  emailjs.send(
+    EMAILJS_CONFIG.serviceId,
+    EMAILJS_CONFIG.templateId,
+    {
+      from_name: name,
+      from_email: email,
+      subject: subject,
+      message: message,
+      to_email: PORTFOLIO_CONFIG.email
     }
-
-    // Validation email simple
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      showToast("Adresse e-mail invalide.");
-      return;
-    }
-
-    // Ici tu peux envoyer via un backend ou un service comme EmailJS
-    // Pour l'instant, on simule l'envoi
-    const submitBtn = $(this).find(".form-submit");
-    const originalText = submitBtn.html();
-    submitBtn.html("Envoi en cours...").prop("disabled", true);
+  )
+  .then(function () {
+    submitBtn.html("Message envoyé ✓").css({
+      background: "#22c55e",
+      color: "#fff"
+    });
+    showToast("Merci ! Votre message a bien été envoyé.");
+    $("#contactForm")[0].reset();
 
     setTimeout(function () {
-      submitBtn.html("Message envoyé ✓").css({
-        background: "#22c55e",
-        color: "#fff"
-      });
-
-      showToast("Merci ! Votre message a bien été envoyé.");
-      $("#contactForm")[0].reset();
-
-      setTimeout(function () {
-        submitBtn.html(originalText).css({
-          background: "",
-          color: ""
-        }).prop("disabled", false);
-      }, 2500);
-    }, 1200);
+      submitBtn.html(originalText).css({
+        background: "",
+        color: ""
+      }).prop("disabled", false);
+    }, 2500);
+  })
+  .catch(function (error) {
+    console.error("Erreur EmailJS :", error);
+    showToast("Erreur lors de l'envoi. Réessayez plus tard.");
+    submitBtn.html(originalText).prop("disabled", false);
   });
+});
 
   /* ============================================
      TOAST
