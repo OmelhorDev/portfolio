@@ -4,10 +4,10 @@
 ============================================ */
 const PORTFOLIO_CONFIG = {
   email: "ndiogouba.developpeur@gmail.com",
-  github: "",
-  linkedin: "",
+  github: "https://github.com/OmelhorDev",
+  linkedin: "https://www.linkedin.com/in/ndiogou-ba-5696242a9/", 
   youtube: "",
-  instagram: ""
+  instagram: "https://www.instagram.com/o_melhor_dev/"
 };
 
 $(document).ready(function () {
