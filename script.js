@@ -5,11 +5,14 @@
 const PORTFOLIO_CONFIG = {
   email: "ndiogouba.developpeur@gmail.com",
   github: "https://github.com/OmelhorDev",
-  linkedin: "https://www.linkedin.com/in/ndiogou-ba-5696242a9/", 
+  linkedin: "https://www.linkedin.com/in/ndiogou-ba-5696242a9/",
   youtube: "",
   instagram: "https://www.instagram.com/o_melhor_dev/"
 };
 
+/* ============================================
+   CONFIGURATION EMAILJS
+============================================ */
 const EMAILJS_CONFIG = {
   publicKey: "bh2JC2kzO2do5Ojb7",
   serviceId: "service_o5h3vii",
@@ -18,7 +21,10 @@ const EMAILJS_CONFIG = {
 
 $(document).ready(function () {
 
-    if (typeof emailjs !== "undefined") {
+  /* ============================================
+     INITIALISATION EMAILJS
+  ============================================ */
+  if (typeof emailjs !== "undefined") {
     emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
   }
 
@@ -29,9 +35,8 @@ $(document).ready(function () {
     $("#preloader").addClass("hidden");
   }, 600);
 
-    /* ============================================
+  /* ============================================
      ✨ ANIMATION TYPEWRITER SUR LE NOM
-     Alterne entre "NDIOGOU BA" et "DÉVELOPPEUR FULL-STACK"
   ============================================ */
   (function initTypewriter() {
     const $target = $("#typewriter");
@@ -39,18 +44,18 @@ $(document).ready(function () {
 
     const words = [
       "Ndiogou Ba",
-      "Développeur\nFull-Stack"   // ← \n = retour à la ligne
+      "Développeur\nFull-Stack"
     ];
 
-    let wordIndex = 0;      // mot actuel
-    let charIndex = 0;      // position du caractère
-    let isDeleting = false; // mode effacement
-    let isPaused = false;   // pause entre les mots
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let isPaused = false;
 
-    const TYPING_SPEED = 100;    // vitesse frappe (ms)
-    const DELETING_SPEED = 55;   // vitesse effacement (ms)
-    const PAUSE_AFTER_WORD = 1600; // pause quand mot complet
-    const PAUSE_BEFORE_NEXT = 400; // pause avant mot suivant
+    const TYPING_SPEED = 100;
+    const DELETING_SPEED = 55;
+    const PAUSE_AFTER_WORD = 1600;
+    const PAUSE_BEFORE_NEXT = 400;
 
     function type() {
       const currentWord = words[wordIndex];
@@ -58,12 +63,10 @@ $(document).ready(function () {
       if (isPaused) return;
 
       if (!isDeleting) {
-        // ÉCRITURE
         charIndex++;
         $target.text(currentWord.substring(0, charIndex));
 
         if (charIndex === currentWord.length) {
-          // Mot complet → pause
           isPaused = true;
           setTimeout(function () {
             isPaused = false;
@@ -76,12 +79,10 @@ $(document).ready(function () {
         setTimeout(type, TYPING_SPEED);
 
       } else {
-        // EFFACEMENT
         charIndex--;
         $target.text(currentWord.substring(0, charIndex));
 
         if (charIndex === 0) {
-          // Mot effacé → mot suivant
           isDeleting = false;
           wordIndex = (wordIndex + 1) % words.length;
 
@@ -97,9 +98,8 @@ $(document).ready(function () {
       }
     }
 
-    // Démarrage après le preloader
     setTimeout(type, 900);
-  })(); 
+  })();
 
   /* ============================================
      THÈME SOMBRE / CLAIR
@@ -112,9 +112,6 @@ $(document).ready(function () {
     const next = current === "dark" ? "light" : "dark";
     $("html").attr("data-theme", next);
     localStorage.setItem("theme", next);
-
-    // Animation douce de transition
-    $("body").css("transition", "background .4s ease, color .4s ease");
   });
 
   /* ============================================
@@ -127,7 +124,6 @@ $(document).ready(function () {
     $("#navLinks").toggleClass("open", !isOpen);
   });
 
-  // Fermer le menu au clic sur un lien
   $(".nav-link, .nav-cta").on("click", function () {
     $("#navLinks").removeClass("open");
     $("#menuToggle").attr("aria-expanded", "false");
@@ -153,7 +149,6 @@ $(document).ready(function () {
       }
     });
 
-    // Back to top
     if ($(window).scrollTop() > 400) {
       $("#backToTop").addClass("visible");
     } else {
@@ -194,7 +189,6 @@ $(document).ready(function () {
       if (windowBottom > elTop && !$(this).hasClass("visible")) {
         $(this).addClass("visible");
 
-        // Animation des barres de compétences
         $(this).find(".skill-level i").each(function () {
           const width = $(this).data("width");
           $(this).css("width", width);
@@ -230,10 +224,14 @@ $(document).ready(function () {
 
   /* ============================================
      CONFIGURATION DES CONTACTS
+     ✅ CORRIGÉ : détecte si l'email est configuré
   ============================================ */
-  const emailIsConfigured = PORTFOLIO_CONFIG.email && PORTFOLIO_CONFIG.email !== "ndiogouba.developpeur@gmail.com";
+  const emailIsConfigured =
+    PORTFOLIO_CONFIG.email &&
+    PORTFOLIO_CONFIG.email.length > 0 &&
+    PORTFOLIO_CONFIG.email !== "ton.email@example.com";
 
-  // Liens sociaux
+  // Liens sociaux (GitHub, LinkedIn, Instagram, YouTube)
   $("[data-social]").each(function () {
     const network = $(this).data("social");
     const url = PORTFOLIO_CONFIG[network];
@@ -245,89 +243,93 @@ $(document).ready(function () {
     } else {
       $(this).on("click", function (e) {
         e.preventDefault();
-        showToast(`Ajoute ton vrai lien ${network} dans script.js.`);
+        showToast(`⚠️ Ajoute ton lien ${network} dans script.js`);
       });
     }
   });
 
   /* ============================================
      COPIE EMAIL AU CLIC
+     Copie l'adresse puis ouvre le client mail.
   ============================================ */
   $('a[href^="mailto:"]').on("click", function (e) {
     if (!emailIsConfigured) {
       e.preventDefault();
-      showToast("Remplace ndiogouba.developpeur@gmail.com dans script.js par ton adresse e-mail.");
+      showToast("⚠️ Configure ton adresse e-mail dans script.js");
       return;
     }
 
-    // Essayer de copier en plus
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(PORTFOLIO_CONFIG.email).then(function () {
-        showToast("Adresse e-mail copiée !");
-      }).catch(function () {
-        // silencieux
-      });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(PORTFOLIO_CONFIG.email)
+        .then(function () {
+          showToast("✅ Adresse copiée : " + PORTFOLIO_CONFIG.email);
+        })
+        .catch(function () {
+          showToast("📧 Ouverture de votre client mail…");
+        });
+    } else {
+      showToast("📧 Ouverture de votre client mail…");
     }
   });
 
   /* ============================================
-     FORMULAIRE DE CONTACT
+     FORMULAIRE DE CONTACT — ENVOI VIA EMAILJS
   ============================================ */
   $("#contactForm").on("submit", function (e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const name = $("#name").val().trim();
-  const email = $("#email").val().trim();
-  const subject = $("#subject").val().trim();
-  const message = $("#message").val().trim();
+    const name = $("#name").val().trim();
+    const email = $("#email").val().trim();
+    const subject = $("#subject").val().trim();
+    const message = $("#message").val().trim();
 
-  if (!name || !email || !subject || !message) {
-    showToast("Merci de remplir tous les champs.");
-    return;
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    showToast("Adresse e-mail invalide.");
-    return;
-  }
-
-  const submitBtn = $(this).find(".form-submit");
-  const originalText = submitBtn.html();
-  submitBtn.html("Envoi en cours...").prop("disabled", true);
-
-  emailjs.send(
-    EMAILJS_CONFIG.serviceId,
-    EMAILJS_CONFIG.templateId,
-    {
-      from_name: name,
-      from_email: email,
-      subject: subject,
-      message: message,
-      to_email: PORTFOLIO_CONFIG.email
+    if (!name || !email || !subject || !message) {
+      showToast("⚠️ Merci de remplir tous les champs.");
+      return;
     }
-  )
-  .then(function () {
-    submitBtn.html("Message envoyé ✓").css({
-      background: "#22c55e",
-      color: "#fff"
-    });
-    showToast("Merci ! Votre message a bien été envoyé.");
-    $("#contactForm")[0].reset();
 
-    setTimeout(function () {
-      submitBtn.html(originalText).css({
-        background: "",
-        color: ""
-      }).prop("disabled", false);
-    }, 2500);
-  })
-  .catch(function (error) {
-    console.error("Erreur EmailJS :", error);
-    showToast("Erreur lors de l'envoi. Réessayez plus tard.");
-    submitBtn.html(originalText).prop("disabled", false);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showToast("⚠️ Adresse e-mail invalide.");
+      return;
+    }
+
+    const submitBtn = $(this).find(".form-submit");
+    const originalText = submitBtn.html();
+    submitBtn.html("Envoi en cours...").prop("disabled", true);
+
+    emailjs.send(
+      EMAILJS_CONFIG.serviceId,
+      EMAILJS_CONFIG.templateId,
+      {
+        from_name: name,
+        from_email: email,
+        subject: subject,
+        message: message,
+        to_email: PORTFOLIO_CONFIG.email
+      }
+    )
+    .then(function () {
+      submitBtn.html("Message envoyé ✓").css({
+        background: "#22c55e",
+        color: "#fff"
+      });
+      showToast("✅ Merci ! Votre message a bien été envoyé.");
+      $("#contactForm")[0].reset();
+
+      setTimeout(function () {
+        submitBtn.html(originalText).css({
+          background: "",
+          color: ""
+        }).prop("disabled", false);
+      }, 2500);
+    })
+    .catch(function (error) {
+      console.error("Erreur EmailJS :", error);
+      showToast("❌ Erreur lors de l'envoi. Réessayez plus tard.");
+      submitBtn.html(originalText).prop("disabled", false);
+    });
   });
-});
 
   /* ============================================
      TOAST
@@ -357,23 +359,27 @@ $(document).ready(function () {
   });
 
   /* ============================================
-     ANIMATION DES CARTES AU SURVOL (tilt léger)
+     TILT 3D AU SURVOL DES CARTES
+     Désactivé sur mobile (pas de souris)
   ============================================ */
-  $(".project-card, .skill-card").on("mousemove", function (e) {
-    const rect = this.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+  if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    $(".project-card, .skill-card").on("mousemove", function (e) {
+      const rect = this.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -3;
-    const rotateY = ((x - centerX) / centerX) * 3;
+      const rotateX = ((y - centerY) / centerY) * -3;
+      const rotateY = ((x - centerX) / centerX) * 3;
 
-    $(this).css("transform", `translateY(-6px) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
-  });
+      $(this).css("transform",
+        `translateY(-6px) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
+    });
 
-  $(".project-card, .skill-card").on("mouseleave", function () {
-    $(this).css("transform", "");
-  });
+    $(".project-card, .skill-card").on("mouseleave", function () {
+      $(this).css("transform", "");
+    });
+  }
 
 });
