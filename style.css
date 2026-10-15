@@ -1311,3 +1311,83 @@ img, video, svg {
   box-shadow: 0 10px 40px rgba(0,0,0,.5),
               0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
 }
+
+/* ============================================
+   ART DAHIRA — Projet communautaire
+============================================ */
+.art-dahira {
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(34, 139, 87, .25), transparent 55%),
+    linear-gradient(140deg, #1a2420, #0e1512 70%);
+  position: relative;
+}
+
+.dahira-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: .15;
+  background-image:
+    radial-gradient(circle at 20% 30%, var(--accent) 1px, transparent 1.5px),
+    radial-gradient(circle at 80% 70%, var(--accent) 1px, transparent 1.5px),
+    linear-gradient(45deg, transparent 48%, rgba(255,255,255,.05) 49%, transparent 51%);
+  background-size: 40px 40px, 40px 40px, 20px 20px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+}
+
+.dahira-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.dahira-content > span {
+  display: block;
+  color: #4ade80;
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.dahira-content b {
+  display: block;
+  color: #f7eee7;
+  font: 700 34px/.95 var(--display);
+  letter-spacing: -1.5px;
+  margin: 0 0 10px;
+}
+
+.dahira-content b em {
+  color: #4ade80;
+  font-style: normal;
+}
+
+.dahira-content small {
+  display: block;
+  color: #8fb897;
+  font-size: 8px;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+}
+
+.dahira-lines {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.dahira-lines i {
+  display: block;
+  height: 3px;
+  border-radius: 4px;
+  background: #4ade80;
+}
+
+.dahira-lines i:nth-child(1) { width: 45px; }
+.dahira-lines i:nth-child(2) { width: 24px; opacity: .6; }
+.dahira-lines i:nth-child(3) { width: 14px; opacity: .3; }
